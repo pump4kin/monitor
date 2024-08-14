@@ -14,7 +14,7 @@ pip install --index-url=https://mirrors.aliyun.com/pypi/simple/ --no-cache-dir -
 
 ### 打包部署（docker）
 ```
-#打包镜像
+# 打包镜像
 docker build -t monitor:0.0.3 . --progress=plain
 # 另存镜像
 docker save -o monitor003.tar monitor:0.0.3
