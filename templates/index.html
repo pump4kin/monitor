@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Server Monitor</title>
+    <script src="https://fastly.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div>
+        <label for="start_time">Start Time:</label>
+        <input type="datetime-local" id="start_time">
+        <label for="end_time">End Time:</label>
+        <input type="datetime-local" id="end_time">
+        <button onclick="update()">Fetch Data</button>
+    </div>
+    <div>
+        <canvas id="cpuChart" width="400" height="90"></canvas>
+        <canvas id="memoryChart" width="400" height="90"></canvas>
+    </div>
+
+    <script>
+
+        let cpuChart;  // Global variable to store the CPU chart instance
+        let memoryChart;  // Global variable to store the Memory chart instance
+
+        async function fetchData(url) {
+            const response = await fetch(url + '?start_time=' + document.getElementById('start_time').value + '&end_time=' + document.getElementById('end_time').value);
+            return await response.json();
+        }
+
+        async function updateChart(chartId, label, url) {
+            // Destroy existing chart if it exists
+            if (chartId === 'cpuChart' && cpuChart) {
+                cpuChart.destroy();
+            } else if (chartId === 'memoryChart' && memoryChart) {
+                memoryChart.destroy();
+            }
+
+            const data = await fetchData(url);
+            const labels = data.map(item => item.timestamp);
+            const values = data.map(item => item[label]);
+
+            const ctx = document.getElementById(chartId).getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: label + ' Usage',
+                            data: values,
+                            backgroundColor: 'rgba(246,173,188,0.2)',
+                            borderColor: 'rgb(30,66,219)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            if (chartId === 'cpuChart') {
+                cpuChart = chart;
+            } else if (chartId === 'memoryChart') {
+                memoryChart = chart;
+            }
+        }
+
+        async function update() {
+            await updateChart('cpuChart', 'cpu', '/data/cpu');
+            await updateChart('memoryChart', 'memory', '/data/memory');
+        }
+
+        update();
+
+    </script>
+</body>
+</html>
