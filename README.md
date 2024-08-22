@@ -12,6 +12,10 @@
 ```
 # 环境配置
 pip install --index-url=https://mirrors.aliyun.com/pypi/simple/ --no-cache-dir -r requirements.txt
+# 启动采集
+python data_collector.py
+# 启动web
+python app.py
 ```
 
 ### 打包部署（docker）
