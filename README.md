@@ -1,4 +1,4 @@
-# monitor监控
+# linux-server-monitor Linux服务器监控
 
 可以监控linux服务器的CPU和内存占用情况，支持历史监控查询（个人自用，功能比较简单，后续可能会优化）。
 使用docker部署，使用supervisord进行进程管理。
